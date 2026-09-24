@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#FFFFFF" />
+  <meta name="description" content="专注时钟 - 一个简洁、跨平台的专注计时工具" />
+  <title>专注时钟</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="apple-touch-icon" href="icon-192.jpg" />
+  <link rel="icon" type="image/jpeg" href="icon-192.jpg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css?v=3" />
+</head>
+<body>
+  <div id="app" class="app-shell">
+    <!-- Home View -->
+    <section id="view-home" class="view view-home" aria-label="首页">
+      <header class="home-header">
+        <div class="stat-pill" aria-label="今日已专注次数">
+          <span class="stat-icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          </span>
+          <span class="stat-label">已专注</span>
+          <span id="home-focus-count" class="stat-value">0</span>
+          <span class="stat-unit">次</span>
+        </div>
+        <button id="btn-home-settings" class="btn btn-ghost btn-icon" aria-label="设置">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+        </button>
+      </header>
+
+      <main class="home-main">
+        <div class="current-time-wrap">
+          <span id="current-time" class="current-time" aria-live="polite">--:--</span>
+          <span id="current-date" class="current-date">--月--日</span>
+        </div>
+
+        <div class="duration-card">
+          <label class="duration-label" for="duration-input">选择专注时长</label>
+          <div class="duration-row">
+            <div class="duration-presets" role="group" aria-label="专注时长预设">
+              <button class="preset-btn" data-min="15" aria-label="15 分钟">15</button>
+              <button class="preset-btn" data-min="25" aria-label="25 分钟">25</button>
+              <button class="preset-btn" data-min="45" aria-label="45 分钟">45</button>
+              <button class="preset-btn" data-min="60" aria-label="60 分钟">60</button>
+              <button class="preset-btn active" data-min="90" aria-label="90 分钟">90</button>
+            </div>
+            <div class="duration-field">
+              <input id="duration-input" type="number" min="1" max="180" value="90" aria-label="自定义专注时长（分钟）" />
+              <span class="duration-unit">分钟</span>
+            </div>
+          </div>
+        </div>
+
+        <button id="btn-start" class="btn btn-primary btn-large start-btn" aria-label="开始专注">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+          <span>开始</span>
+        </button>
+
+        <p class="home-tagline">设定今日，总得静驻未来</p>
+      </main>
+    </section>
+
+    <!-- Focus View -->
+    <section id="view-focus" class="view view-focus" aria-label="专注中" hidden>
+      <header class="focus-header">
+        <button id="btn-focus-settings" class="btn btn-ghost btn-icon" aria-label="设置">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+        </button>
+      </header>
+
+      <main class="focus-main">
+        <div class="timer-ring-wrap" role="img" aria-label="专注倒计时">
+          <svg class="timer-ring" viewBox="0 0 240 240" aria-hidden="true">
+            <circle class="ring-track" cx="120" cy="120" r="100"></circle>
+            <circle id="ring-progress" class="ring-progress" cx="120" cy="120" r="100"></circle>
+          </svg>
+          <div class="timer-ball" id="timer-ball" aria-hidden="true"></div>
+          <div class="timer-display">
+            <span id="focus-time" class="focus-time">90:00</span>
+            <span id="focus-status" class="focus-status">专注中</span>
+          </div>
+        </div>
+
+        <div class="focus-controls">
+          <button id="btn-end" class="btn btn-secondary btn-control" aria-label="结束专注">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
+            <span>结束</span>
+          </button>
+          <button id="btn-pause" class="btn btn-primary btn-control" aria-label="暂停">
+            <svg id="icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            <svg id="icon-resume" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <span id="btn-pause-text">暂停</span>
+          </button>
+        </div>
+      </main>
+    </section>
+
+    <!-- Rest Setup View -->
+    <section id="view-rest-setup" class="view view-rest-setup" aria-label="休息设置" hidden>
+      <header class="rest-setup-header">
+        <h1 class="rest-setup-title">专注完成</h1>
+        <p class="rest-setup-subtitle">选择一段休息时间，让注意力恢复</p>
+      </header>
+      <main class="rest-setup-main">
+        <div class="duration-card">
+          <label class="duration-label" for="rest-duration-input">休息时长</label>
+          <div class="duration-row">
+            <div class="duration-presets rest-presets" role="group" aria-label="休息时长预设">
+              <button class="preset-btn" data-min="3" aria-label="3 分钟">3</button>
+              <button class="preset-btn active" data-min="5" aria-label="5 分钟">5</button>
+              <button class="preset-btn" data-min="10" aria-label="10 分钟">10</button>
+              <button class="preset-btn" data-min="15" aria-label="15 分钟">15</button>
+              <button class="preset-btn" data-min="20" aria-label="20 分钟">20</button>
+            </div>
+            <div class="duration-field">
+              <input id="rest-duration-input" type="number" min="1" max="60" value="5" aria-label="自定义休息时长（分钟）" />
+              <span class="duration-unit">分钟</span>
+            </div>
+          </div>
+        </div>
+        <button id="btn-start-rest" class="btn btn-primary btn-large start-btn">开始休息</button>
+        <button id="btn-skip-rest" class="btn btn-ghost btn-sm">跳过休息，返回首页</button>
+      </main>
+    </section>
+
+    <!-- Rest Timer View -->
+    <section id="view-rest" class="view view-rest" aria-label="休息中" hidden>
+      <header class="focus-header">
+        <button id="btn-rest-settings" class="btn btn-ghost btn-icon" aria-label="设置">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1Z"></path></svg>
+        </button>
+      </header>
+      <main class="focus-main">
+        <div class="timer-ring-wrap rest-ring-wrap" role="img" aria-label="休息倒计时">
+          <svg class="timer-ring" viewBox="0 0 240 240" aria-hidden="true">
+            <circle class="ring-track rest-track" cx="120" cy="120" r="100"></circle>
+            <circle id="rest-ring-progress" class="ring-progress rest-progress" cx="120" cy="120" r="100"></circle>
+          </svg>
+          <div class="timer-ball rest-ball" id="rest-ball" aria-hidden="true"></div>
+          <div class="timer-display">
+            <span id="rest-time" class="focus-time">05:00</span>
+            <span id="rest-status" class="focus-status">休息中</span>
+          </div>
+        </div>
+        <div class="focus-controls">
+          <button id="btn-rest-end" class="btn btn-secondary btn-control">结束休息</button>
+          <button id="btn-rest-pause" class="btn btn-primary btn-control">
+            <svg id="icon-rest-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            <svg id="icon-rest-resume" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <span id="btn-rest-pause-text">暂停</span>
+          </button>
+        </div>
+      </main>
+    </section>
+
+    <!-- Encouragement Overlay -->
+    <div id="encouragement-overlay" class="encouragement-overlay" aria-hidden="true" hidden>
+      <div class="encouragement-text">
+        <span>共勉</span>
+        <span class="encouragement-comma">，</span>
+        <span>加油</span>
+      </div>
+    </div>
+
+    <!-- Settings View -->
+    <section id="view-settings" class="view view-settings" aria-label="设置" hidden>
+      <header class="settings-header">
+        <button id="btn-settings-back" class="btn btn-ghost btn-icon" aria-label="返回">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
+        <h1 class="settings-title">设置</h1>
+        <div class="settings-spacer" aria-hidden="true"></div>
+      </header>
+
+      <main class="settings-main">
+        <div class="settings-group">
+          <h2 class="settings-group-title">计时器</h2>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">默认专注时长</span>
+              <span class="setting-desc">开始专注时使用的默认时长</span>
+            </div>
+            <div class="setting-control">
+              <input id="setting-duration" type="number" min="1" max="180" value="90" aria-label="默认专注时长" />
+              <span class="setting-unit">分钟</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">循环时长</span>
+              <span class="setting-desc">结束一次后自动开始下一次的间隔</span>
+            </div>
+            <div class="setting-control">
+              <input id="setting-loop" type="number" min="0" max="60" value="5" aria-label="循环间隔" />
+              <span class="setting-unit">分钟</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">中途提示间隔</span>
+              <span class="setting-desc">专注过程中在区间内随机响起一次提示音</span>
+            </div>
+            <div class="setting-control">
+              <select id="setting-interval" aria-label="中途提示间隔">
+                <option value="0">关闭</option>
+                <option value="5-7" selected>5–7 分钟</option>
+                <option value="10-15">10–15 分钟</option>
+                <option value="15-20">15–20 分钟</option>
+                <option value="20-30">20–30 分钟</option>
+                <option value="30-45">30–45 分钟</option>
+                <option value="custom">自定义</option>
+              </select>
+            </div>
+          </div>
+          <div id="custom-interval-row" class="setting-row custom-range-row" hidden>
+            <div class="setting-info">
+              <span class="setting-name">自定义区间</span>
+              <span class="setting-desc">提示音将在该时间范围内随机响起</span>
+            </div>
+            <div class="setting-control range-inputs">
+              <input id="custom-interval-min" type="number" min="1" max="180" value="5" aria-label="自定义区间最小值" />
+              <span>–</span>
+              <input id="custom-interval-max" type="number" min="1" max="180" value="7" aria-label="自定义区间最大值" />
+              <span class="setting-unit">分钟</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">声音</h2>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">提示音量</span>
+              <span class="setting-desc">调节提示音大小</span>
+            </div>
+            <div class="setting-control slider-control">
+              <input id="setting-volume" type="range" min="0" max="100" value="70" aria-label="提示音量" />
+              <span id="volume-value" class="slider-value">70%</span>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">提示音效</span>
+              <span class="setting-desc">选择喜欢的提示音风格</span>
+            </div>
+            <div class="setting-control">
+              <select id="setting-sound" aria-label="提示音效">
+                <option value="ding" selected>叮咚</option>
+                <option value="bell">风铃</option>
+                <option value="chime">编钟</option>
+                <option value="digital">电子</option>
+              </select>
+            </div>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">自定义提示音</span>
+              <span class="setting-desc">上传自己的 MP3/WAV 作为提示音</span>
+            </div>
+            <label class="btn btn-ghost btn-sm import-label">
+              上传
+              <input id="setting-custom-audio" type="file" accept="audio/*" aria-label="上传自定义提示音" hidden />
+            </label>
+          </div>
+          <div id="custom-audio-info" class="custom-audio-info" hidden>
+            <span id="custom-audio-name"></span>
+            <button id="btn-clear-audio" class="btn btn-ghost btn-sm" type="button">清除</button>
+          </div>
+          <button id="btn-test-sound" class="btn btn-ghost btn-sm">试听提示音</button>
+        </div>
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">显示</h2>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">界面亮度</span>
+              <span class="setting-desc">调整整个界面的明暗程度</span>
+            </div>
+            <div class="setting-control slider-control">
+              <input id="setting-brightness" type="range" min="50" max="120" value="100" aria-label="界面亮度" />
+              <span id="brightness-value" class="slider-value">100%</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">账号与同步</h2>
+          <div id="account-info" class="account-info" hidden>
+            <div class="account-avatar-wrap">
+              <img id="account-avatar" src="" alt="" class="account-avatar" />
+            </div>
+            <div class="account-meta">
+              <span id="account-name" class="account-name"></span>
+              <span class="account-status">已登录 GitHub</span>
+            </div>
+            <button id="btn-logout" class="btn btn-ghost btn-sm">退出</button>
+          </div>
+          <div id="account-login" class="account-login">
+            <p class="setting-desc">使用 GitHub Personal Access Token 实现跨设备数据同步。不登录也可单机使用。</p>
+            <div class="token-row">
+              <input id="github-token" type="password" placeholder="ghp_xxxxxxxx" aria-label="GitHub Token" />
+              <button id="btn-login" class="btn btn-primary btn-sm">登录</button>
+            </div>
+            <button id="btn-sync" class="btn btn-ghost btn-sm" disabled>立即同步</button>
+            <p id="sync-status" class="sync-status"></p>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">数据</h2>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">导出数据</span>
+              <span class="setting-desc">将专注记录导出为 JSON 文件</span>
+            </div>
+            <button id="btn-export" class="btn btn-ghost btn-sm">导出</button>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">导入数据</span>
+              <span class="setting-desc">从 JSON 文件恢复专注记录</span>
+            </div>
+            <label class="btn btn-ghost btn-sm import-label">
+              导入
+              <input id="btn-import" type="file" accept="application/json" aria-label="导入数据" hidden />
+            </label>
+          </div>
+          <div class="setting-row">
+            <div class="setting-info">
+              <span class="setting-name">清除所有数据</span>
+              <span class="setting-desc">清空本地保存的所有记录</span>
+            </div>
+            <button id="btn-clear" class="btn btn-danger btn-sm">清除</button>
+          </div>
+        </div>
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">记录管理</h2>
+          <div id="records-list" class="records-list"></div>
+        </div>
+
+        <div class="settings-group">
+          <h2 class="settings-group-title">统计</h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span id="stats-today" class="stat-card-value">0</span>
+              <span class="stat-card-label">今日专注</span>
+            </div>
+            <div class="stat-card">
+              <span id="stats-week" class="stat-card-value">0</span>
+              <span class="stat-card-label">本周专注</span>
+            </div>
+            <div class="stat-card">
+              <span id="stats-total" class="stat-card-value">0</span>
+              <span class="stat-card-label">累计专注</span>
+            </div>
+            <div class="stat-card">
+              <span id="stats-minutes" class="stat-card-value">0</span>
+              <span class="stat-card-label">累计分钟</span>
+            </div>
+          </div>
+        </div>
+      </main>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
+
+  <script src="app.js?v=4"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js?v=4').catch(() => {});
+    }
+  </script>
+</body>
+</html>
