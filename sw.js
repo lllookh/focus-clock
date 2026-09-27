@@ -1,4 +1,4 @@
-const CACHE_NAME = 'focus-clock-v5';
+const CACHE_NAME = 'focus-clock-v6';
 const ASSETS = [
   './',
   './index.html',

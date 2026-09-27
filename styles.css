@@ -539,6 +539,21 @@ input, select {
   max-width: 320px;
 }
 
+.btn-end-now {
+  margin-top: var(--spacer-8);
+  color: var(--text-tertiary);
+  font-size: 14px;
+  line-height: 20px;
+  padding: var(--spacer-8) var(--spacer-16);
+  border-radius: var(--radius-8);
+  transition: color 0.2s ease, background 0.2s ease;
+}
+
+.btn-end-now:hover {
+  color: var(--status-alert-default);
+  background: var(--status-alert-bg);
+}
+
 /* Rest Setup View */
 .rest-setup-header {
   display: flex;

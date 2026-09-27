@@ -84,9 +84,9 @@
         </div>
 
         <div class="focus-controls">
-          <button id="btn-end" class="btn btn-secondary btn-control" aria-label="即时结束专注">
+          <button id="btn-end" class="btn btn-secondary btn-control" aria-label="结束专注">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect></svg>
-            <span>即时结束</span>
+            <span>结束</span>
           </button>
           <button id="btn-pause" class="btn btn-primary btn-control" aria-label="暂停">
             <svg id="icon-pause" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
@@ -94,6 +94,7 @@
             <span id="btn-pause-text">暂停</span>
           </button>
         </div>
+        <button id="btn-end-now" class="btn btn-ghost btn-sm btn-end-now" aria-label="即时结束专注并记录真实时长">即时结束</button>
       </main>
     </section>
 
@@ -368,10 +369,10 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js?v=5').catch(() => {});
+      navigator.serviceWorker.register('sw.js?v=6').catch(() => {});
     }
   </script>
 </body>

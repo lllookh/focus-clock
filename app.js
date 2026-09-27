@@ -1075,6 +1075,13 @@
     });
 
     document.getElementById('btn-end').addEventListener('click', () => {
+      if (confirm('确定要提前结束本轮专注吗？')) {
+        stopTimer();
+        completeFocus(true);
+      }
+    });
+
+    document.getElementById('btn-end-now').addEventListener('click', () => {
       stopTimer();
       completeFocus(true);
     });
