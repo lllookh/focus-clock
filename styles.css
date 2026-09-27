@@ -224,33 +224,80 @@ input, select {
 /* Home View */
 .home-header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   padding-top: var(--spacer-8);
-  margin-bottom: var(--spacer-32);
+  margin-bottom: var(--spacer-24);
 }
 
-.stat-pill {
-  display: inline-flex;
-  align-items: center;
+.today-summary {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacer-10);
+  min-width: 0;
+  flex: 1;
+  padding-right: var(--spacer-12);
+}
+
+.today-minutes {
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  color: var(--text-default);
+}
+
+.today-minutes span {
+  font-family: var(--font-family-metric);
+  font-weight: 700;
+}
+
+.today-records {
+  display: flex;
+  flex-direction: column;
   gap: var(--spacer-6);
-  padding: var(--spacer-8) var(--spacer-14);
-  background: var(--bg-base-secondary);
-  border-radius: var(--radius-full);
-  color: var(--text-secondary);
+  max-height: 120px;
+  overflow-y: auto;
+  padding-right: var(--spacer-4);
+}
+
+.today-record {
   font-size: 13px;
   line-height: 18px;
+  color: var(--text-secondary);
+  opacity: 0;
+  transform: translateX(20px);
+  animation: slideInRight 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 
-.stat-icon {
-  display: inline-flex;
-  color: var(--icon-tertiary);
+.today-record:first-child {
+  animation-delay: 0.05s;
 }
 
-.stat-value {
-  font-family: var(--font-family-metric);
-  font-weight: 600;
+.today-record time {
+  color: var(--text-tertiary);
+  margin-right: var(--spacer-6);
+}
+
+.today-record .record-duration {
   color: var(--text-default);
+  font-weight: 500;
+}
+
+.today-records:empty::before {
+  content: '今日还没有专注记录';
+  font-size: 13px;
+  color: var(--text-tertiary);
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .home-main {

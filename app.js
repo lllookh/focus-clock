@@ -56,7 +56,8 @@
   };
 
   const els = {
-    homeFocusCount: document.getElementById('home-focus-count'),
+    homeTodayMinutes: document.getElementById('home-today-minutes'),
+    todayRecords: document.getElementById('today-records'),
     currentTime: document.getElementById('current-time'),
     currentDate: document.getElementById('current-date'),
     durationInput: document.getElementById('duration-input'),
@@ -226,18 +227,58 @@
     }).length;
   }
 
+  function getTodayMinutes() {
+    const todayKey = getTodayKey();
+    return state.records
+      .filter(r => r.date === todayKey)
+      .reduce((sum, r) => sum + (r.actualMinutes || r.plannedMinutes || 0), 0);
+  }
+
+  function renderTodayRecords() {
+    const todayKey = getTodayKey();
+    const todayRecords = state.records
+      .filter(r => r.date === todayKey)
+      .sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+    els.homeTodayMinutes.textContent = todayRecords.reduce((sum, r) => sum + (r.actualMinutes || r.plannedMinutes || 0), 0);
+    els.todayRecords.innerHTML = '';
+
+    if (todayRecords.length === 0) return;
+
+    todayRecords.forEach((record, index) => {
+      const item = document.createElement('div');
+      item.className = 'today-record';
+      // 只有最新一条播放入场动画，其余直接可见
+      if (index > 0) {
+        item.style.opacity = '1';
+        item.style.transform = 'translateX(0)';
+        item.style.animation = 'none';
+      }
+      const d = new Date(record.timestamp);
+      const timeStr = `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      const minutes = record.actualMinutes || record.plannedMinutes || 0;
+      const status = record.endedEarly ? ' · 提前结束' : '';
+      item.innerHTML = `
+        <time>${timeStr}</time>
+        <span class="record-duration">${minutes} 分钟</span>
+        <span>${status}</span>
+      `;
+      els.todayRecords.appendChild(item);
+    });
+  }
+
   function updateStats() {
     const todayKey = getTodayKey();
     const todayCount = countForDay(todayKey);
     const weekCount = countForWeek();
     const totalCount = state.records.length;
-    const totalMinutes = Math.floor(state.records.reduce((sum, r) => sum + (r.plannedMinutes || 0), 0));
+    const totalMinutes = Math.floor(state.records.reduce((sum, r) => sum + (r.actualMinutes || r.plannedMinutes || 0), 0));
 
-    els.homeFocusCount.textContent = todayCount;
     statEls.today.textContent = todayCount;
     statEls.week.textContent = weekCount;
     statEls.total.textContent = totalCount;
     statEls.minutes.textContent = totalMinutes;
+    renderTodayRecords();
   }
 
   function renderRecordsList() {
@@ -253,11 +294,12 @@
       item.className = 'record-item';
       const d = new Date(record.timestamp);
       const dateStr = `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      const minutes = record.actualMinutes || record.plannedMinutes || 0;
       const status = record.endedEarly ? '提前结束' : '已完成';
       item.innerHTML = `
         <div class="record-info">
           <span class="record-date">${dateStr}</span>
-          <span class="record-meta">${record.plannedMinutes} 分钟 · ${status}</span>
+          <span class="record-meta">${minutes} 分钟 · ${status}</span>
         </div>
         <button class="btn btn-ghost record-delete" data-id="${record.id}" aria-label="删除这条记录">删除</button>
       `;
@@ -275,16 +317,20 @@
 
   function addRecord(endedEarly = false) {
     const now = new Date();
+    const elapsedSeconds = state.totalSeconds - state.remaining;
+    const actualMinutes = Math.max(1, Math.round(elapsedSeconds / 60));
     state.records.push({
       id: now.getTime(),
       timestamp: now.toISOString(),
       date: getTodayKey(now),
       plannedMinutes: state.duration,
+      actualMinutes,
       endedEarly
     });
     saveData();
     updateStats();
     renderRecordsList();
+    renderTodayRecords();
     if (githubAccount) syncToGist();
   }
 
@@ -293,6 +339,7 @@
     saveData();
     updateStats();
     renderRecordsList();
+    renderTodayRecords();
     if (githubAccount) syncToGist();
   }
 
@@ -449,6 +496,7 @@
         saveData();
         updateStats();
         renderRecordsList();
+        renderTodayRecords();
       }
       if (data.settings) {
         settings = { ...defaultSettings, ...data.settings };
@@ -975,6 +1023,7 @@
         saveSettings();
         updateStats();
         updateSettingsUI();
+        renderTodayRecords();
         els.durationInput.value = settings.duration;
         showToast('数据导入成功');
       } catch (e) {
@@ -1178,6 +1227,7 @@
         saveData();
         updateStats();
         renderRecordsList();
+        renderTodayRecords();
         if (githubAccount) syncToGist();
         showToast('数据已清除');
       }
